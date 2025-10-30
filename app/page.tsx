@@ -47,8 +47,19 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
         
         {/* Hero Content */}
-        <div className="relative z-10 flex items-center justify-center w-full px-8">
-          {/* Left Column */}
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center w-full px-4 sm:px-8">
+          {/* Top Column (Mobile Only) */}
+          <div className="flex lg:hidden flex-col items-center justify-center opacity-30 mb-4">
+            <Image 
+              src="/images/asciiColumn.png" 
+              alt="Roman Column" 
+              width={600} 
+              height={300}
+              className="object-contain rotate-90"
+            />
+          </div>
+
+          {/* Left Column (Desktop Only) */}
           <div className="hidden lg:flex flex-col items-center justify-center opacity-40 hover:opacity-60 transition-opacity duration-500">
             <Image 
               src="/images/asciiColumn.png" 
@@ -60,15 +71,14 @@ export default function Home() {
           </div>
 
           {/* Center Content */}
-          <div className="flex flex-col items-center justify-center mx-12 lg:mx-24">
-            <h1 className="text-white text-7xl md:text-8xl lg:text-9xl tracking-[0.3em] font-rvstica mb-4 relative">
+          <div className="flex flex-col items-center justify-center mx-4 sm:mx-8 lg:mx-12 xl:mx-24">
+            <h1 className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-[0.2em] sm:tracking-[0.3em] font-rvstica mb-4 relative">
               <ScramblingText text="VOLVME" />
-              <span className="absolute -right-8 top-0 text-2xl font-mono">™</span>
+              <span className="absolute -right-6 sm:-right-8 top-0 text-xl sm:text-2xl font-mono">™</span>
             </h1>
-           
-            </div>
+          </div>
 
-          {/* Right Column */}
+          {/* Right Column (Desktop Only) */}
           <div className="hidden lg:flex flex-col items-center justify-center opacity-40 hover:opacity-60 transition-opacity duration-500">
             <Image 
               src="/images/asciiColumn.png" 
@@ -78,11 +88,22 @@ export default function Home() {
               className="object-contain"
             />
           </div>
+
+          {/* Bottom Column (Mobile Only) */}
+          <div className="flex lg:hidden flex-col items-center justify-center opacity-30 mt-4">
+            <Image 
+              src="/images/asciiColumn.png" 
+              alt="Roman Column" 
+              width={600} 
+              height={300}
+              className="object-contain rotate-90"
+            />
+          </div>
         </div>
 
         {/* Ambient Light Effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-blue-500/10 rounded-full blur-3xl" />
       </main>
 
       {/* Footer */}
