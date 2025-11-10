@@ -7,11 +7,14 @@ const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
 interface ScramblingTextProps {
   text: string;
   className?: string;
+  onComplete?: () => void;
 }
 
-export function ScramblingText({ text, className }: ScramblingTextProps) {
-  const [displayText, setDisplayText] = useState<string>(text);
+export function ScramblingText({ text, className, onComplete }: ScramblingTextProps) {
+  // Initialize with text to avoid hydration mismatch, will scramble on client
+  const [scrambledChars, setScrambledChars] = useState<string[]>(() => text.split(""));
   const hasStartedRef = useRef(false);
+  const revealOrderRef = useRef<number[]>([]);
   const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -19,103 +22,85 @@ export function ScramblingText({ text, className }: ScramblingTextProps) {
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
 
+    // Initialize scrambled characters
+    const initialChars = text.split("").map((char) => 
+      char === " " ? " " : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+    );
+    setScrambledChars(initialChars);
+
+    // Create random reveal order
+    const indices = text.split("").map((_, i) => i).filter((i) => text[i] !== " ");
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    revealOrderRef.current = indices;
+
     // Wait for mount, then start animation
     const startDelay = setTimeout(() => {
-      let iterations = 0;
-      const maxIterations = 1000;
-      const revealDelay = 100; // ms between character reveals
+      const currentRevealed = new Set<number>();
+      const revealDelay = 300; // ms between character reveals
+      const scrambleInterval = 120; // ms between scramble updates
 
-      const interval = setInterval(() => {
-        setDisplayText(() =>
-          text
-            .split("")
-            .map((letter, index) => {
-              if (letter === " ") return " ";
-              
-              // Reveal characters progressively
-              if (iterations > index * 3) {
-                return text[index];
-              }
-              
-              return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-            })
-            .join("")
+      // Scramble animation
+      const scrambleIntervalId = setInterval(() => {
+        setScrambledChars((prev) =>
+          prev.map((char, index) => {
+            if (char === " " || currentRevealed.has(index)) {
+              return char;
+            }
+            return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          })
         );
+      }, scrambleInterval);
 
-        iterations++;
-
-        if (iterations >= maxIterations + text.length * 3) {
-          setDisplayText(text);
-          clearInterval(interval);
+      // Reveal characters in random order
+      let revealIndex = 0;
+      const revealIntervalId = setInterval(() => {
+        if (revealIndex < revealOrderRef.current.length) {
+          const charIndex = revealOrderRef.current[revealIndex];
+          currentRevealed.add(charIndex);
+          setScrambledChars((prev) => {
+            const next = [...prev];
+            next[charIndex] = text[charIndex];
+            return next;
+          });
+          revealIndex++;
+        } else {
+          clearInterval(scrambleIntervalId);
+          clearInterval(revealIntervalId);
+          if (onComplete) {
+            onComplete();
+          }
         }
       }, revealDelay);
 
       return () => {
-        clearInterval(interval);
+        clearInterval(scrambleIntervalId);
+        clearInterval(revealIntervalId);
       };
-    }, 250);
+    }, 50);
 
     return () => {
       clearTimeout(startDelay);
     };
-  }, [text]);
-
-  // Set width on parent elements to prevent layout shift
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Wait for next frame to ensure styles are applied
-    const measureWidth = () => {
-      if (!containerRef.current) return;
-      
-      const h1Element = containerRef.current.parentElement;
-      if (!h1Element) return;
-      
-      // Copy computed styles from the h1 element
-      const computedStyle = window.getComputedStyle(h1Element);
-      
-      // Create a temporary element to measure the final text width with exact same styles
-      const temp = document.createElement("span");
-      temp.textContent = text;
-      temp.style.visibility = "hidden";
-      temp.style.position = "absolute";
-      temp.style.whiteSpace = "nowrap";
-      temp.style.top = "-9999px";
-      temp.style.fontSize = computedStyle.fontSize;
-      temp.style.fontFamily = computedStyle.fontFamily;
-      temp.style.fontWeight = computedStyle.fontWeight;
-      temp.style.letterSpacing = computedStyle.letterSpacing;
-      temp.style.fontStyle = computedStyle.fontStyle;
-      temp.style.textTransform = computedStyle.textTransform;
-      
-      document.body.appendChild(temp);
-      const width = temp.offsetWidth;
-      document.body.removeChild(temp);
-      
-      // Set width on both h1 and its parent wrapper div to prevent layout shift
-      if (h1Element) {
-        h1Element.style.width = `${width}px`;
-        h1Element.style.minWidth = `${width}px`;
-      }
-      
-      // Also set width on the wrapper div (if it exists)
-      const wrapperDiv = h1Element.parentElement;
-      if (wrapperDiv) {
-        wrapperDiv.style.width = `${width}px`;
-        wrapperDiv.style.minWidth = `${width}px`;
-      }
-    };
-
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-      requestAnimationFrame(measureWidth);
-    });
-  }, [text]);
+  }, [text, onComplete]);
 
   return (
-    <span ref={containerRef} className={className} style={{ display: "inline-block" }}>
-      {displayText}
+    <span ref={containerRef} className={className} style={{ display: "inline-flex", letterSpacing: "inherit" }}>
+      {scrambledChars.map((char, index) => (
+        <span
+          key={index}
+          style={{
+            display: "inline-block",
+            width: char === " " ? "0.3em" : "1em",
+            textAlign: "center",
+            minWidth: char === " " ? "0.3em" : "1em",
+          }}
+        >
+          {char}
+        </span>
+      ))}
     </span>
   );
 }
-
