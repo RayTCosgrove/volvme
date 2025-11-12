@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { ScramblingText } from "@/components/ScramblingText";
+import SmokeBackground from "@/components/SmokeBackground";
 
 const latinPhrases = [
   "Venit",
@@ -25,6 +26,7 @@ const latinPhrases = [
 export default function Home() {
   const [showTrademark, setShowTrademark] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
+  
   const handleScrambleComplete = useCallback(() => {
     setShowTrademark(true);
   }, []);
@@ -60,9 +62,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden dither-bg">
-      {/* Background Grid Effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+    <div className="relative h-screen sm:min-h-screen bg-black overflow-hidden">
+      {/* Smoke Background - Memoized to prevent re-initialization */}
+      <SmokeBackground />
       
       {/* Latin Text Overlay */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
@@ -87,7 +89,7 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <main className="relative min-h-screen flex items-center justify-center z-20">
+      <main className="relative h-full sm:min-h-screen flex items-center justify-center z-20">
         {/* Left Column */}
         {/* <div className="absolute left-0 top-1/2 -translate-y-1/2 hidden lg:block opacity-40">
           <Image 
@@ -111,32 +113,34 @@ export default function Home() {
         </div> */}
 
         {/* Top Hand - Upper Right */}
-        <div className="absolute top-2 -right-20 opacity-80 z-30 animate-hand-top">
+        <div className="absolute top-8 sm:top-2 -right-20 opacity-80 z-30 animate-hand-top">
           <Image 
             src="/images/tophand.png" 
             alt="Top Hand" 
             width={650} 
             height={650}
             className="object-contain"
+            loading="eager"
           />
         </div>
 
         {/* Bottom Hand - Lower Left */}
-        <div className="absolute bottom-2 -left-20 opacity-80 z-30 animate-hand-bottom">
+        <div className="absolute bottom-20 sm:bottom-2 -left-20 opacity-80 z-30 animate-hand-bottom">
           <Image 
             src="/images/bottomhand.png" 
             alt="Bottom Hand" 
             width={650} 
             height={650}
             className="object-contain"
+            loading="eager"
           />
         </div>
 
         {/* Center Content */}
-        <div className="relative z-40 flex flex-col items-center justify-center px-4">
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-rvstica relative">
+        <div className="relative z-40 flex flex-col items-center justify-center px-4 -mt-16 sm:mt-0">
+          <h1 className="text-white text-5xl md:text-6xl lg:text-7xl  font-rvstica relative">
             <ScramblingText text="VOLVME" onComplete={handleScrambleComplete} />
-            <span className={`absolute -right-6 sm:-right-8 md:-right-10 lg:-right-12 top-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-mono transition-opacity duration-500 ${showTrademark ? 'opacity-100' : 'opacity-0'}`}>™</span>
+            <span className={`absolute -right-6 sm:-right-8  top-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-mono transition-opacity duration-500 ${showTrademark ? 'opacity-100' : 'opacity-0'}`}>™</span>
           </h1>
         </div>
 

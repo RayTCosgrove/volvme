@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { DevToolsErrorSuppressor } from "@/components/DevToolsErrorSuppressor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,8 +21,8 @@ const rvstica = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "VOLVME™ - Where Ancient Wisdom Meets Modern Code",
-  description: "A fusion of classical philosophy and cutting-edge technology. Experience the intersection of hacker culture and Greco-Roman wisdom.",
+  title: "VOLVME",
+  description: "VOLVME",
 };
 
 export default function RootLayout({
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${rvstica.variable} antialiased`}
       >
+        <DevToolsErrorSuppressor />
         {children}
       </body>
     </html>

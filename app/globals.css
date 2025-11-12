@@ -172,6 +172,129 @@
   z-index: 0;
 }
 
+/* Background Style Options */
+
+/* Option 1: Subtle Gradient - Dark to slightly lighter */
+.bg-gradient-subtle {
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+}
+
+/* Option 2: Enhanced Texture with Noise */
+.bg-texture-enhanced {
+  background: #000000 !important;
+  position: relative;
+}
+
+.bg-texture-enhanced::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.2;
+  pointer-events: none;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.08) 2px,
+      rgba(255, 255, 255, 0.08) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.08) 2px,
+      rgba(255, 255, 255, 0.08) 4px
+    );
+  background-size: 8px 8px;
+  animation: dither-move 20s linear infinite;
+  z-index: 0;
+}
+
+/* Option 3: Vignette Effect */
+.bg-vignette {
+  background: #000000 !important;
+  position: relative;
+}
+
+.bg-vignette::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Option 4: Subtle Warm Tint */
+.bg-warm-tint {
+  background: linear-gradient(135deg, #0a0806 0%, #000000 50%, #0a0806 100%) !important;
+}
+
+/* Option 5: Subtle Cool Tint */
+.bg-cool-tint {
+  background: linear-gradient(135deg, #06080a 0%, #000000 50%, #06080a 100%) !important;
+}
+
+/* Option 6: Scanlines (CRT effect) */
+.bg-scanlines {
+  background: #000000 !important;
+  position: relative;
+}
+
+.bg-scanlines::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.15;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.05) 2px,
+    rgba(255, 255, 255, 0.05) 4px
+  );
+  background-size: 100% 4px;
+  z-index: 0;
+}
+
+/* Option 7: Radial Glow from Corners */
+.bg-radial-glow {
+  background: #000000 !important;
+  position: relative;
+}
+
+.bg-radial-glow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at top right, rgba(102, 102, 102, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Option 8: Combined - Gradient + Enhanced Texture */
+.bg-combined {
+  background: linear-gradient(135deg, #000000 0%, #080808 50%, #000000 100%) !important;
+  position: relative;
+}
+
+
 /* Hand Load-in Animations */
 @keyframes hand-top {
   0% {
